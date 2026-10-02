@@ -4,9 +4,9 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "name": "Plane | Accelerate software development with peace.",
-  "short_name": "Plane",
-  "description": "Plane accelerated the software development by order of magnitude for agencies and product companies.",
+  "name": "Karya | Every piece of work, one place.",
+  "short_name": "Karya",
+  "description": "Karya keeps every piece of work in one place.",
   "icons": [
     {
       "src": "/icon-192x192.png",

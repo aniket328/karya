@@ -17,17 +17,17 @@ const linkMap = [
   {
     key: "mail_to",
     label: "Contact Support",
-    value: "mailto:support@plane.so",
+    value: "mailto:hello@cwistudio.in?subject=Karya%20support",
   },
   {
     key: "status",
     label: "Status Page",
-    value: "https://status.plane.so/",
+    value: "https://cwistudio.in",
   },
   {
     key: "twitter_handle",
     label: "@planepowers",
-    value: "https://x.com/planepowers",
+    value: "https://cwistudio.in",
   },
 ];
 

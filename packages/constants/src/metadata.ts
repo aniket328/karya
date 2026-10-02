@@ -4,20 +4,20 @@
  * See the LICENSE file for details.
  */
 
-export const SITE_NAME = "Plane | Simple, extensible, open-source project management tool.";
-export const SITE_TITLE = "Plane | Simple, extensible, open-source project management tool.";
+export const SITE_NAME = "Karya | Every piece of work, one place.";
+export const SITE_TITLE = "Karya | Every piece of work, one place.";
 export const SITE_DESCRIPTION =
   "Open-source project management tool to manage work items, cycles, and product roadmaps easily";
 export const SITE_KEYWORDS =
   "software development, plan, ship, software, accelerate, code management, release management, project management, work items tracking, agile, scrum, kanban, collaboration";
-export const SITE_URL = "https://app.plane.so/";
-export const TWITTER_USER_NAME = "Plane | Simple, extensible, open-source project management tool.";
+export const SITE_URL = "https://karya.cwistudio.in/";
+export const TWITTER_USER_NAME = "Karya | Every piece of work, one place.";
 
 // Plane Sites Metadata
-export const SPACE_SITE_NAME = "Plane Publish | Make your Plane boards and roadmaps pubic with just one-click. ";
-export const SPACE_SITE_TITLE = "Plane Publish | Make your Plane boards public with one-click";
-export const SPACE_SITE_DESCRIPTION = "Plane Publish is a customer feedback management tool built on top of plane.so";
+export const SPACE_SITE_NAME = "Karya Publish | Share your Karya boards with one click.";
+export const SPACE_SITE_TITLE = "Karya Publish | Share your Karya boards with one click";
+export const SPACE_SITE_DESCRIPTION = "Karya Publish shares boards and work items from Karya, by CWI Studio.";
 export const SPACE_SITE_KEYWORDS =
   "software development, customer feedback, software, accelerate, code management, release management, project management, work items tracking, agile, scrum, kanban, collaboration";
-export const SPACE_SITE_URL = "https://app.plane.so/";
+export const SPACE_SITE_URL = "https://karya.cwistudio.in/";
 export const SPACE_TWITTER_USER_NAME = "planepowers";

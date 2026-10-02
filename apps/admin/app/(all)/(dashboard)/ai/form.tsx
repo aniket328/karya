@@ -131,7 +131,7 @@ export function InstanceAIForm(props: IInstanceAIForm) {
           <Lightbulb className="size-4" />
           <div>
             If you have a preferred AI models vendor, please get in{" "}
-            <a className="font-medium underline" href="https://plane.so/contact">
+            <a className="font-medium underline" href="mailto:aniket@cwistudio.in?subject=Karya%20subscription">
               touch with us.
             </a>
           </div>
