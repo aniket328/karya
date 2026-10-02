@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # Build Karya images on the deploy box (arm64). Run from the repo root:  karya/deploy/build.sh 1.4.2-k1
-# Images: karya-web, karya-admin, karya-space, karya-backend (api/worker/beat/migrator), karya-live.
+# Optional 2nd arg limits the set. Images: karya-web, karya-admin, karya-space, karya-backend (api/worker/beat/migrator), karya-live.
 # The proxy (Caddy) is unmodified and stays makeplane/plane-proxy.
 set -euo pipefail
 TAG=${1:?usage: build.sh <tag>}
 cd "$(git rev-parse --show-toplevel)"
 python3 karya/rebrand.py --check   # refuse to build an un-rebranded tree
-build() { echo "=== $1 $(date -u +%T)"; docker buildx build --load -f "$2" -t "karya-$1:$TAG" "${3:-.}"; }
+ONLY=${2:-web admin space live backend}   # e.g. build.sh 1.4.2-k2 "web admin space"
+want() { [[ " $ONLY " == *" $1 "* ]]; }
+build() { want "$1" || return 0; echo "=== $1 $(date -u +%T)"; docker buildx build --load -f "$2" -t "karya-$1:$TAG" "${3:-.}"; }
 build web     apps/web/Dockerfile.web
 build admin   apps/admin/Dockerfile.admin
 build space   apps/space/Dockerfile.space
