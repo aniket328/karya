@@ -1,0 +1,32 @@
+# Karya overlay on Plane's release compose. Use:
+#   docker compose --env-file plane.env -p plane -f docker-compose.yml -f docker-compose.karya.yml up -d
+# Only images change (built by karya/deploy/build.sh); the proxy stays upstream's.
+services:
+  web:
+    image: karya-web:${KARYA_RELEASE:-1.4.2-k1}
+  space:
+    image: karya-space:${KARYA_RELEASE:-1.4.2-k1}
+  admin:
+    image: karya-admin:${KARYA_RELEASE:-1.4.2-k1}
+  live:
+    image: karya-live:${KARYA_RELEASE:-1.4.2-k1}
+  api:
+    image: karya-backend:${KARYA_RELEASE:-1.4.2-k1}
+  worker:
+    image: karya-backend:${KARYA_RELEASE:-1.4.2-k1}
+  beat-worker:
+    image: karya-backend:${KARYA_RELEASE:-1.4.2-k1}
+  migrator:
+    image: karya-backend:${KARYA_RELEASE:-1.4.2-k1}
+  # ops.cwistudio.in (the first address, in the 2 Oct invites) -> karya.cwistudio.in, permanently.
+  karya-redirect:
+    image: caddy:2-alpine
+    restart: always
+    entrypoint: ["/bin/sh", "-c"]
+    command: ['printf ":80 {\n  redir https://karya.cwistudio.in{uri} permanent\n}\n" > /tmp/Caddyfile && exec caddy run --config /tmp/Caddyfile --adapter caddyfile']
+    ports:
+      - target: 80
+        host_ip: 127.0.0.1
+        published: 8091
+        protocol: tcp
+        mode: host

@@ -1,0 +1,10 @@
+# Karya — outbound-only Cloudflare tunnel "plane-ops" (name predates the rebrand). No inbound SG rule.
+# Creds = Doppler PLANE_OPS_TUNNEL_CREDS_B64. Lives at /etc/cloudflared/config.yml on the box.
+tunnel: 06f549f3-ad17-41d8-b57a-8b09f419893e
+credentials-file: /etc/cloudflared/06f549f3-ad17-41d8-b57a-8b09f419893e.json
+ingress:
+  - hostname: karya.cwistudio.in
+    service: http://127.0.0.1:8090
+  - hostname: ops.cwistudio.in
+    service: http://127.0.0.1:8091
+  - service: http_status:404
