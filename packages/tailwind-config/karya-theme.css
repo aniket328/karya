@@ -1,0 +1,37 @@
+/*
+ * Karya (CWI Studio) theme: Plane's brand scale re-hued to Karya coral (#ff7a59, oklch hue 37).
+ * Lightness steps are upstream's, so contrast pairs stay valid. Imported after variables.css in index.css.
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+@layer base {
+  :root,
+  :host {
+    --brand-100: oklch(0.9847 0.0098 37);
+    --brand-200: oklch(0.9715 0.0197 37);
+    --brand-300: oklch(0.9428 0.0402 37);
+    --brand-400: oklch(0.9008 0.0693 37);
+    --brand-500: oklch(0.8414 0.1117 37);
+    --brand-600: oklch(0.7649 0.1643 37);
+    --brand-700: oklch(0.6766 0.1900 37);
+    --brand-900: oklch(0.4347 0.1228 37);
+    --brand-1000: oklch(0.3399 0.0924 37);
+    --brand-1100: oklch(0.2626 0.0682 37);
+    --brand-1200: oklch(0.2093 0.0517 37);
+    --brand-default: oklch(0.5600 0.1550 37);
+
+    @variant dark {
+      --brand-100: oklch(0.2029 0.0354 37);
+      --brand-200: oklch(0.2513 0.0493 37);
+      --brand-300: oklch(0.3208 0.0685 37);
+      --brand-400: oklch(0.4088 0.0917 37);
+      --brand-500: oklch(0.4511 0.1027 37);
+      --brand-700: oklch(0.7408 0.1184 37);
+      --brand-800: oklch(0.8318 0.0774 37);
+      --brand-900: oklch(0.8969 0.0473 37);
+      --brand-1000: oklch(0.9409 0.0270 37);
+      --brand-1100: oklch(0.9704 0.0135 37);
+      --brand-1200: oklch(0.9856 0.0059 37);
+      --brand-default: oklch(0.6311 0.1490 37);
+    }
+  }
+}
