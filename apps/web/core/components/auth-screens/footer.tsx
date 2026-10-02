@@ -5,41 +5,13 @@
  */
 
 import React from "react";
-import { AccentureLogo, DolbyLogo, SonyLogo, ZerodhaLogo } from "@plane/propel/icons";
 
-const BRAND_LOGOS: {
-  id: string;
-  icon: React.ReactNode;
-}[] = [
-  {
-    id: "zerodha",
-    icon: <ZerodhaLogo className="h-7 w-24 text-[#387ED1]" />,
-  },
-  {
-    id: "sony",
-    icon: <SonyLogo className="h-7 w-16 dark:text-on-color" />,
-  },
-  {
-    id: "dolby",
-    icon: <DolbyLogo className="h-7 w-16 dark:text-on-color" />,
-  },
-  {
-    id: "accenture",
-    icon: <AccentureLogo className="h-7 w-24 dark:text-on-color" />,
-  },
-];
-
+// Karya: upstream shows Plane's customer logos here (Zerodha, Sony, Dolby, Accenture). They are Plane's customers,
+// not ours, so the strip is removed — never put another company's logo on a Karya screen without their consent.
 export function AuthFooter() {
   return (
     <div className="flex flex-col items-center gap-6">
       <span className="text-13 whitespace-nowrap text-tertiary">Karya by CWI Studio</span>
-      <div className="flex w-full flex-wrap items-center justify-center gap-x-10 gap-y-4">
-        {BRAND_LOGOS.map((brand) => (
-          <div className="flex h-7 flex-1 items-center justify-center" key={brand.id}>
-            {brand.icon}
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
