@@ -87,6 +87,36 @@ const detectMimeTypeFromSignature = async (file: File): Promise<string> => {
  * @param {File} file
  * @returns {Promise<string>} validated and detected MIME type
  */
+// Karya: text formats (CSV/TXT) have no signature and legacy Office files sniff as the generic OLE container,
+// which made Excel/CSV attachments fail (5 Oct 2026). Fall back to the extension, then the browser's type.
+// The server re-checks everything against its allowlist (apps/api/plane/karya/files.py).
+const KARYA_GENERIC_TYPES = new Set(["", "application/octet-stream", "application/x-cfb", "application/zip", "text/plain"]);
+const KARYA_EXTENSION_TYPES: Record<string, string> = {
+  csv: "text/csv",
+  tsv: "text/plain",
+  txt: "text/plain",
+  md: "text/markdown",
+  xls: "application/vnd.ms-excel",
+  xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  xlsm: "application/vnd.ms-excel.sheet.macroEnabled.12",
+  xlsb: "application/vnd.ms-excel.sheet.binary.macroEnabled.12",
+  doc: "application/msword",
+  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ppt: "application/vnd.ms-powerpoint",
+  pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  ods: "application/vnd.oasis.opendocument.spreadsheet",
+  odt: "application/vnd.oasis.opendocument.text",
+  json: "application/json",
+  heic: "image/heic",
+  heif: "image/heif",
+  mov: "video/quicktime",
+  m4v: "video/x-m4v",
+  "3gp": "video/3gpp",
+  mkv: "video/x-matroska",
+};
+const karyaTypeFromName = (name: string): string =>
+  KARYA_EXTENSION_TYPES[name.split(".").pop()?.toLowerCase() ?? ""] ?? "";
+
 const validateAndDetectFileType = async (file: File): Promise<string> => {
   // Basic filename validation
   const filenameError = validateFilename(file.name);
@@ -96,9 +126,14 @@ const validateAndDetectFileType = async (file: File): Promise<string> => {
 
   try {
     const signatureType = await detectMimeTypeFromSignature(file);
-    if (signatureType) {
+    if (signatureType && !KARYA_GENERIC_TYPES.has(signatureType)) {
       return signatureType;
     }
+    // Karya: generic or unknown signature — prefer what the name says, then what the browser says
+    const byName = karyaTypeFromName(file.name);
+    if (byName) return byName;
+    if (signatureType) return signatureType;
+    if (file.type) return file.type;
   } catch (_error) {
     console.warn("Error detecting file type from signature:", _error);
   }

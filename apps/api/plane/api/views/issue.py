@@ -28,6 +28,8 @@ from django.db.models import (
 from django.utils import timezone
 from django.conf import settings
 
+from plane.karya.files import allowed_types, resolve_attachment_type  # Karya
+
 # Third party imports
 from rest_framework import status
 from rest_framework.response import Response
@@ -1912,7 +1914,8 @@ class IssueAttachmentListCreateAPIEndpoint(BaseAPIView):
 
         size_limit = min(size, settings.FILE_SIZE_LIMIT)
 
-        if not type or type not in settings.ATTACHMENT_MIME_TYPES:
+        type = resolve_attachment_type(type, name)  # Karya: CSV/XLS/blank types
+        if not type or type not in allowed_types():
             return Response(
                 {"error": "Invalid file type.", "status": False},
                 status=status.HTTP_400_BAD_REQUEST,
