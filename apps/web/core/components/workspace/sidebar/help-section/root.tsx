@@ -83,6 +83,12 @@ export const HelpMenuRoot = observer(function HelpMenuRoot() {
             <span className="text-11">Forum</span>
           </div>
         </CustomMenu.MenuItem>
+        <CustomMenu.MenuItem onClick={() => window.open("https://github.com/aniket328/karya", "_blank", "noopener,noreferrer")}>
+          {/* Karya: AGPL-3.0 §13 — every user can reach the source of the version they use */}
+          <div className="flex items-center gap-x-2 rounded-sm text-11">
+            <span className="text-11">Source code (AGPL-3.0)</span>
+          </div>
+        </CustomMenu.MenuItem>
         <div className="mt-1 border-t border-subtle px-1 pt-2 text-11 text-secondary">
           <PlaneVersionNumber />
         </div>
