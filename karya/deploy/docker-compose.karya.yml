@@ -30,3 +30,7 @@ services:
         published: 8091
         protocol: tcp
         mode: host
+  # Loopback only: reached over the restricted SSH tunnel (operation-room/runbooks/db-tunnel-access.md).
+  plane-db:
+    ports:
+      - "127.0.0.1:15433:5432"
