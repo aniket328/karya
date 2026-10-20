@@ -123,8 +123,14 @@ export const KanbanGroup = observer(function KanbanGroup(props: IKanbanGroup) {
   );
   const [isDraggingOverColumn, setIsDraggingOverColumn] = useState(false);
 
-  const { workflowDisabledSource, isWorkflowDropDisabled, handleWorkFlowState, getIsWorkflowWorkItemCreationDisabled } =
-    useWorkFlowFDragNDrop(group_by, sub_group_by);
+  const {
+    workflowDisabledSource,
+    isWorkflowDropDisabled,
+    workflowDropErrorMessage, // Karya: approver-only states
+    handleWorkFlowState,
+    getIsWorkflowWorkItemCreationDisabled,
+  } = useWorkFlowFDragNDrop(group_by, sub_group_by);
+  const columnDropErrorMessage = (isWorkflowDropDisabled && workflowDropErrorMessage) || dropErrorMessage; // Karya
 
   // Enable Kanban Columns as Drop Targets
   useEffect(() => {
@@ -162,11 +168,11 @@ export const KanbanGroup = observer(function KanbanGroup(props: IKanbanGroup) {
 
           if (!source || !destination) return;
 
-          if ((isWorkflowDropDisabled || isDropDisabled) && dropErrorMessage) {
+          if ((isWorkflowDropDisabled || isDropDisabled) && columnDropErrorMessage) {
             setToast({
               type: TOAST_TYPE.WARNING,
               title: t("common.warning"),
-              message: dropErrorMessage,
+              message: columnDropErrorMessage,
             });
             return;
           }
@@ -193,6 +199,7 @@ export const KanbanGroup = observer(function KanbanGroup(props: IKanbanGroup) {
     isDropDisabled,
     isWorkflowDropDisabled,
     dropErrorMessage,
+    columnDropErrorMessage,
     handleOnDrop,
   ]);
 
@@ -293,7 +300,7 @@ export const KanbanGroup = observer(function KanbanGroup(props: IKanbanGroup) {
         canOverlayBeVisible={canOverlayBeVisible}
         isDropDisabled={isWorkflowDropDisabled || isDropDisabled}
         workflowDisabledSource={workflowDisabledSource}
-        dropErrorMessage={dropErrorMessage}
+        dropErrorMessage={columnDropErrorMessage}
         orderBy={orderBy}
         isDraggingOverColumn={isDraggingOverColumn}
         isEpic={isEpic}

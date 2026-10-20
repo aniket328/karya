@@ -10,6 +10,7 @@ import { useTranslation } from "@plane/i18n";
 // components
 import { NotAuthorizedView } from "@/components/auth-screens/not-authorized-view";
 import { PageHead } from "@/components/core/page-title";
+import { KaryaStateApprovers } from "@/components/karya/state-approvers"; // Karya
 import { ProjectStateRoot } from "@/components/project-states";
 import { SettingsContentWrapper } from "@/components/settings/content-wrapper";
 import { SettingsHeading } from "@/components/settings/heading";
@@ -51,6 +52,7 @@ function StatesSettingsPage({ params }: Route.ComponentProps) {
         <div className="mt-6">
           <ProjectStateRoot workspaceSlug={workspaceSlug} projectId={projectId} />
         </div>
+        <KaryaStateApprovers workspaceSlug={workspaceSlug} projectId={projectId} />
       </div>
     </SettingsContentWrapper>
   );

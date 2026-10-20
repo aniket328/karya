@@ -113,8 +113,14 @@ export const ListGroup = observer(function ListGroup(props: Props) {
 
   const [intersectionElement, setIntersectionElement] = useState<HTMLDivElement | null>(null);
 
-  const { workflowDisabledSource, isWorkflowDropDisabled, handleWorkFlowState, getIsWorkflowWorkItemCreationDisabled } =
-    useWorkFlowFDragNDrop(group_by);
+  const {
+    workflowDisabledSource,
+    isWorkflowDropDisabled,
+    workflowDropErrorMessage, // Karya: approver-only states
+    handleWorkFlowState,
+    getIsWorkflowWorkItemCreationDisabled,
+  } = useWorkFlowFDragNDrop(group_by);
+  const groupDropErrorMessage = (isWorkflowDropDisabled && workflowDropErrorMessage) || group.dropErrorMessage; // Karya
   const isWorkflowIssueCreationDisabled = getIsWorkflowWorkItemCreationDisabled(group.id);
 
   const groupIssueCount = getGroupIssueCount(group.id, undefined, false) ?? 0;
@@ -218,11 +224,11 @@ export const ListGroup = observer(function ListGroup(props: Props) {
           if (!source || !destination) return;
 
           if (isWorkflowDropDisabled || group.isDropDisabled) {
-            if (group.dropErrorMessage)
+            if (groupDropErrorMessage)
               setToast({
                 type: TOAST_TYPE.WARNING,
                 title: t("common.warning"),
-                message: group.dropErrorMessage,
+                message: groupDropErrorMessage,
               });
             return;
           }
@@ -246,6 +252,7 @@ export const ListGroup = observer(function ListGroup(props: Props) {
     setDragColumnOrientation,
     setIsDraggingOverColumn,
     isWorkflowDropDisabled,
+    groupDropErrorMessage,
   ]);
 
   const isDragAllowed = group_by ? DRAG_ALLOWED_GROUPS.includes(group_by) : true;
@@ -292,7 +299,7 @@ export const ListGroup = observer(function ListGroup(props: Props) {
             canOverlayBeVisible={canOverlayBeVisible}
             isDropDisabled={isDropDisabled}
             workflowDisabledSource={workflowDisabledSource}
-            dropErrorMessage={group.dropErrorMessage}
+            dropErrorMessage={groupDropErrorMessage}
             orderBy={orderBy}
             isDraggingOverColumn={isDraggingOverColumn}
             isEpic={isEpic}

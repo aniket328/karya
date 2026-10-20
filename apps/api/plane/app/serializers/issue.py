@@ -194,6 +194,9 @@ class IssueCreateSerializer(BaseSerializer):
         ):
             raise serializers.ValidationError("Estimate point is not valid please pass a valid estimate_point_id")
 
+        from plane.karya.approvals import check_serializer_state  # Karya: approver-only states
+
+        check_serializer_state(self, attrs)  # Karya
         return attrs
 
     def create(self, validated_data):

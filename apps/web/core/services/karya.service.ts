@@ -8,6 +8,8 @@ import { API_BASE_URL } from "@plane/constants";
 import { APIService } from "@/services/api.service";
 
 export type TKaryaUpgradeRequest = { plan: string; frequency?: string; note?: string };
+/** state id -> ids of the people allowed to move work items into it; a state that is absent is open to everyone. */
+export type TKaryaStateApprovers = Record<string, string[]>;
 
 export class KaryaService extends APIService {
   constructor() {
@@ -18,6 +20,32 @@ export class KaryaService extends APIService {
   async requestUpgrade(workspaceSlug: string, payload: TKaryaUpgradeRequest): Promise<string> {
     return this.post(`/api/workspaces/${workspaceSlug}/karya/upgrade-request/`, payload)
       .then((res) => res?.data?.status)
+      .catch((err) => {
+        throw err?.response?.data;
+      });
+  }
+
+  /** Who may move work items into each approver-only state of a project. */
+  async getStateApprovers(workspaceSlug: string, projectId: string): Promise<TKaryaStateApprovers> {
+    return this.get(`/api/workspaces/${workspaceSlug}/projects/${projectId}/karya/state-approvers/`)
+      .then((res) => res?.data?.states ?? {})
+      .catch((err) => {
+        throw err?.response?.data;
+      });
+  }
+
+  /** Project admins only. An empty list opens the state to everyone again. */
+  async setStateApprovers(
+    workspaceSlug: string,
+    projectId: string,
+    stateId: string,
+    approverIds: string[]
+  ): Promise<string[]> {
+    return this.put(`/api/workspaces/${workspaceSlug}/projects/${projectId}/karya/state-approvers/`, {
+      state_id: stateId,
+      approver_ids: approverIds,
+    })
+      .then((res) => res?.data?.approver_ids ?? [])
       .catch((err) => {
         throw err?.response?.data;
       });

@@ -111,6 +111,7 @@ INSTALLED_APPS = [
     "plane.license",
     "plane.api",
     "plane.authentication",
+    "plane.karya",  # Karya: approver-only states (plane/karya/approvals.py)
     # Third-party things
     "rest_framework",
     "corsheaders",

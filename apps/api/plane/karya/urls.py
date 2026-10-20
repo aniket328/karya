@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 from django.urls import path
 
+from .approvals_views import KaryaStateApproverEndpoint
 from .views import KaryaUpgradeRequestEndpoint
 
 urlpatterns = [
@@ -9,5 +10,10 @@ urlpatterns = [
         "workspaces/<str:slug>/karya/upgrade-request/",
         KaryaUpgradeRequestEndpoint.as_view(),
         name="karya-upgrade-request",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/karya/state-approvers/",
+        KaryaStateApproverEndpoint.as_view(),
+        name="karya-state-approvers",
     ),
 ]
