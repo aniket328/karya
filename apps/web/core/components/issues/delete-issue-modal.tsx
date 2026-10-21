@@ -6,18 +6,17 @@
 
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react";
-import { useParams } from "next/navigation";
 // types
-import { PROJECT_ERROR_MESSAGES, EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
+import { PROJECT_ERROR_MESSAGES } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { TDeDupeIssue, TIssue } from "@plane/types";
 // ui
 import { AlertModalCore } from "@plane/ui";
 // hooks
+import { useKaryaWorkItemDeleters } from "@/hooks/karya/use-work-item-deleters";
 import { useIssues } from "@/hooks/store/use-issues";
 import { useProject } from "@/hooks/store/use-project";
-import { useUser, useUserPermissions } from "@/hooks/store/user";
 
 type Props = {
   isOpen: boolean;
@@ -34,13 +33,13 @@ export const DeleteIssueModal = observer(function DeleteIssueModal(props: Props)
   // states
   const [isDeleting, setIsDeleting] = useState(false);
   // store hooks
-  const { workspaceSlug } = useParams();
   const { issueMap } = useIssues();
   const { getProjectById } = useProject();
-  const { allowPermissions } = useUserPermissions();
   const { t } = useTranslation();
-
-  const { data: currentUser } = useUser();
+  // Karya: who may delete is a project setting (project admins and the creator when it is unset)
+  const { canDelete, restrictionMessage } = useKaryaWorkItemDeleters(
+    (data ?? (dataId ? issueMap[dataId] : undefined))?.project_id
+  );
 
   useEffect(() => {
     setIsDeleting(false);
@@ -51,16 +50,7 @@ export const DeleteIssueModal = observer(function DeleteIssueModal(props: Props)
   // derived values
   const issue = data ? data : issueMap[dataId!];
   const projectDetails = getProjectById(issue?.project_id);
-  const isIssueCreator = issue?.created_by === currentUser?.id;
-
-  const canPerformProjectAdminActions = allowPermissions(
-    [EUserPermissions.ADMIN],
-    EUserPermissionsLevel.PROJECT,
-    workspaceSlug?.toString(),
-    projectDetails?.id
-  );
-
-  const authorized = isIssueCreator || canPerformProjectAdminActions;
+  const authorized = canDelete(issue?.created_by);
 
   const onClose = () => {
     setIsDeleting(false);
@@ -74,14 +64,14 @@ export const DeleteIssueModal = observer(function DeleteIssueModal(props: Props)
       setToast({
         title: t(PROJECT_ERROR_MESSAGES.permissionError.i18n_title),
         type: TOAST_TYPE.ERROR,
-        message:
-          PROJECT_ERROR_MESSAGES.permissionError.i18n_message && t(PROJECT_ERROR_MESSAGES.permissionError.i18n_message),
+        message: restrictionMessage,
       });
       onClose();
       return;
     }
     if (onSubmit)
       await onSubmit()
+        // oxlint-disable-next-line eslint-plugin-promise/always-return -- upstream code, untouched by Karya
         .then(() => {
           setToast({
             type: TOAST_TYPE.SUCCESS,
@@ -93,6 +83,14 @@ export const DeleteIssueModal = observer(function DeleteIssueModal(props: Props)
           onClose();
         })
         .catch((errors) => {
+          if (errors?.code === "KARYA_DELETE_NOT_ALLOWED") {
+            setToast({
+              title: t(PROJECT_ERROR_MESSAGES.permissionError.i18n_title),
+              type: TOAST_TYPE.ERROR,
+              message: errors.error,
+            });
+            return;
+          }
           const isPermissionError =
             errors?.error ===
             `Only admin or creator can delete the ${isSubIssue ? "sub-work item" : isEpic ? "epic" : "work item"}`;

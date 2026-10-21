@@ -15,6 +15,7 @@ import { EIssuesStoreType } from "@plane/types";
 import { ContextMenu, CustomMenu } from "@plane/ui";
 import { cn } from "@plane/utils";
 // hooks
+import { useKaryaWorkItemDeleters } from "@/hooks/karya/use-work-item-deleters"; // Karya
 import { useIssues } from "@/hooks/store/use-issues";
 import { useProject } from "@/hooks/store/use-project";
 import { useProjectState } from "@/hooks/store/use-project-state";
@@ -41,6 +42,7 @@ export const ProjectIssueQuickActions = observer(function ProjectIssueQuickActio
   } = props;
   // router
   const { workspaceSlug } = useParams();
+  const { canDelete: karyaCanDelete } = useKaryaWorkItemDeleters(issue.project_id); // Karya
   // states
   const [createUpdateIssueModal, setCreateUpdateIssueModal] = useState(false);
   const [issueToEdit, setIssueToEdit] = useState<TIssue | undefined>(undefined);
@@ -66,7 +68,7 @@ export const ProjectIssueQuickActions = observer(function ProjectIssueQuickActio
     ) && !readOnly;
   const isArchivingAllowed = handleArchive && isEditingAllowed;
   const isInArchivableGroup = !!stateDetails && ARCHIVABLE_STATE_GROUPS.includes(stateDetails?.group);
-  const isDeletingAllowed = isEditingAllowed;
+  const isDeletingAllowed = isEditingAllowed && karyaCanDelete(issue.created_by);
 
   const duplicateIssuePayload = omit(
     {

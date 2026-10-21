@@ -15,6 +15,7 @@ import { EIssuesStoreType } from "@plane/types";
 import { ContextMenu, CustomMenu } from "@plane/ui";
 import { cn } from "@plane/utils";
 // hooks
+import { useKaryaWorkItemDeleters } from "@/hooks/karya/use-work-item-deleters"; // Karya
 import { useProject } from "@/hooks/store/use-project";
 import { useProjectState } from "@/hooks/store/use-project-state";
 // helper
@@ -45,6 +46,7 @@ export const AllIssueQuickActions = observer(function AllIssueQuickActions(props
   const [_, setDuplicateWorkItemModal] = useState(false);
   // router
   const { workspaceSlug } = useParams();
+  const { canDelete: karyaCanDelete } = useKaryaWorkItemDeleters(issue.project_id); // Karya
   const { getStateById } = useProjectState();
   const { getProjectIdentifierById } = useProject();
   // derived values
@@ -72,7 +74,7 @@ export const AllIssueQuickActions = observer(function AllIssueQuickActions(props
     activeLayout: "Global issues",
     isEditingAllowed,
     isArchivingAllowed,
-    isDeletingAllowed: isEditingAllowed,
+    isDeletingAllowed: isEditingAllowed && karyaCanDelete(issue.created_by),
     isInArchivableGroup,
     setIssueToEdit,
     setCreateUpdateIssueModal,

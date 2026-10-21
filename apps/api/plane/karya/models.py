@@ -33,3 +33,28 @@ class KaryaStateApprover(ProjectBaseModel):
 
     def __str__(self):
         return f"{self.approver_id} -> {self.state_id}"
+
+
+class KaryaIssueDeleter(ProjectBaseModel):
+    """A person allowed to delete work items in a project.
+
+    A project with no rows keeps upstream behaviour (project admins, and the creator of a work item). A project with
+    rows lets only these people delete, any work item, e.g. "developers create tickets, only the business team deletes".
+    """
+
+    member = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="karya_issue_deletions")
+
+    class Meta:
+        verbose_name = "Karya Work Item Deleter"
+        verbose_name_plural = "Karya Work Item Deleters"
+        db_table = "karya_issue_deleters"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["project", "member"],
+                condition=Q(deleted_at__isnull=True),
+                name="karya_issue_deleter_unique_when_deleted_at_null",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.member_id} -> {self.project_id}"

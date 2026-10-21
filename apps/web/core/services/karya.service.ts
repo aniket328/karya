@@ -50,4 +50,24 @@ export class KaryaService extends APIService {
         throw err?.response?.data;
       });
   }
+
+  /** Who may delete work items in a project; empty means upstream (project admins and the creator). */
+  async getDeleters(workspaceSlug: string, projectId: string): Promise<string[]> {
+    return this.get(`/api/workspaces/${workspaceSlug}/projects/${projectId}/karya/deleters/`)
+      .then((res) => res?.data?.member_ids ?? [])
+      .catch((err) => {
+        throw err?.response?.data;
+      });
+  }
+
+  /** Project admins only. An empty list restores upstream behaviour. */
+  async setDeleters(workspaceSlug: string, projectId: string, memberIds: string[]): Promise<string[]> {
+    return this.put(`/api/workspaces/${workspaceSlug}/projects/${projectId}/karya/deleters/`, {
+      member_ids: memberIds,
+    })
+      .then((res) => res?.data?.member_ids ?? [])
+      .catch((err) => {
+        throw err?.response?.data;
+      });
+  }
 }

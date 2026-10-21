@@ -9,5 +9,5 @@ class KaryaConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
 
     def ready(self):
-        # Connects the Issue pre_save guard for approver-only states.
-        from . import approvals  # noqa: F401
+        # Connect the Issue pre_save guards for approver-only states and work item deleters.
+        from . import approvals, deletion  # noqa: F401

@@ -3,6 +3,7 @@
 from django.urls import path
 
 from .approvals_views import KaryaStateApproverEndpoint
+from .deletion_views import KaryaIssueDeleterEndpoint
 from .views import KaryaUpgradeRequestEndpoint
 
 urlpatterns = [
@@ -15,5 +16,10 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/karya/state-approvers/",
         KaryaStateApproverEndpoint.as_view(),
         name="karya-state-approvers",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/karya/deleters/",
+        KaryaIssueDeleterEndpoint.as_view(),
+        name="karya-issue-deleters",
     ),
 ]

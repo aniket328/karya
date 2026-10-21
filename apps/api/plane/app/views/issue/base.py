@@ -73,6 +73,10 @@ from plane.utils.issue_filters import issue_filters
 from plane.utils.order_queryset import order_issue_queryset
 from plane.utils.paginator import GroupedOffsetPaginator, SubGroupedOffsetPaginator
 from plane.utils.timezone_converter import user_timezone_converter
+from plane.karya.deletion import (  # Karya
+    check_delete as karya_check_delete,
+    check_deleter_list as karya_check_deleter_list,
+)
 
 from .. import BaseAPIView, BaseViewSet
 
@@ -713,9 +717,10 @@ class IssueViewSet(BaseViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @allow_permission([ROLE.ADMIN], creator=True, model=Issue)
+    @allow_permission([ROLE.ADMIN, ROLE.MEMBER, ROLE.GUEST])  # Karya: who may delete is decided by check_delete
     def destroy(self, request, slug, project_id, pk=None):
         issue = Issue.objects.get(workspace__slug=slug, project_id=project_id, pk=pk)
+        karya_check_delete(issue, request.user)  # Karya
 
         issue.delete()
         # delete the issue from recent visits
@@ -777,6 +782,7 @@ class BulkDeleteIssuesEndpoint(BaseAPIView):
 
         if not len(issue_ids):
             return Response({"error": "Issue IDs are required"}, status=status.HTTP_400_BAD_REQUEST)
+        karya_check_deleter_list(project_id, request.user)  # Karya
 
         issues = Issue.issue_objects.filter(workspace__slug=slug, project_id=project_id, pk__in=issue_ids)
 

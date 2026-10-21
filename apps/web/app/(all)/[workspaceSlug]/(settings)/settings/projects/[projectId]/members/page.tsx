@@ -11,6 +11,7 @@ import { useTranslation } from "@plane/i18n";
 // components
 import { NotAuthorizedView } from "@/components/auth-screens/not-authorized-view";
 import { PageHead } from "@/components/core/page-title";
+import { KaryaWorkItemDeleters } from "@/components/karya/work-item-deleters"; // Karya
 import { ProjectMemberList } from "@/components/project/member-list";
 import { ProjectSettingsMemberDefaults } from "@/components/project/project-settings-member-defaults";
 import { SettingsContentWrapper } from "@/components/settings/content-wrapper";
@@ -49,6 +50,7 @@ function MembersSettingsPage({ params }: Route.ComponentProps) {
       <SettingsHeading title={t("common.members")} />
       <ProjectSettingsMemberDefaults projectId={projectId} workspaceSlug={workspaceSlug} />
       <ProjectMemberList projectId={projectId} workspaceSlug={workspaceSlug} />
+      <KaryaWorkItemDeleters workspaceSlug={workspaceSlug} projectId={projectId} />
     </SettingsContentWrapper>
   );
 }
