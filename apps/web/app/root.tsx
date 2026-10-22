@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
 import Script from "next/script";
 import { Links, Meta, Outlet, Scripts } from "react-router";
 import type { LinksFunction } from "react-router";
-import { ThemeProvider, useTheme } from "next-themes";
+import { ThemeProvider } from "next-themes";
 // plane imports
 import { SITE_DESCRIPTION, SITE_NAME } from "@plane/constants";
 import { cn } from "@plane/utils";
@@ -30,9 +30,12 @@ import { isStaleAssetError, recoverFromStaleAsset } from "@/lib/stale-asset-erro
 import { CustomErrorComponent } from "./error";
 import { AppProvider } from "./provider";
 // fonts
+// oxlint-disable-next-line import/no-unassigned-import -- side-effect font CSS
 import "@fontsource-variable/inter";
 import interVariableWoff2 from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+// oxlint-disable-next-line import/no-unassigned-import -- side-effect font CSS
 import "@fontsource/material-symbols-rounded";
+// oxlint-disable-next-line import/no-unassigned-import -- side-effect font CSS
 import "@fontsource/ibm-plex-mono";
 
 const APP_TITLE = "Karya | Every piece of work, one place.";
@@ -134,12 +137,11 @@ export default function Root() {
   );
 }
 
+// Karya: render the same markup at build time and in the browser. Upstream returned <div /> at build time and the
+// spinner in the browser; that mismatch made React 18 throw away and rebuild the whole document on every hard load,
+// and a chunk that touched document.body during the rebuild left the page blank (seen on project settings). The
+// Karya spinner looks the same in light and dark, so it needs no theme.
 export function HydrateFallback() {
-  const { resolvedTheme } = useTheme();
-
-  // if we are on the server or the theme is not resolved, return an empty div
-  if (typeof window === "undefined" || resolvedTheme === undefined) return <div />;
-
   return (
     <div className="relative flex h-screen w-full items-center justify-center bg-canvas">
       <LogoSpinner />
